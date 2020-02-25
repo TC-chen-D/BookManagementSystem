@@ -1,6 +1,7 @@
 package main
 
 import (
+	//"gopkg.in/go-playground/validator.v8"
 	"os"
 	"time"
 
@@ -61,6 +62,8 @@ func newLfsHook(logLevel string) log.Hook {
 	return lfsHook
 }
 
+
+
 func main() {
 	InitLogs()
 	err := db.InitDB()
@@ -68,6 +71,9 @@ func main() {
 		log.Error("connect mysql fail", err.Error())
 	}
 	r := gin.Default()
+	//if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+	//	v.RegisterValidation("bookabledate", BookableDate)
+	//}
 	r.LoadHTMLGlob("templates/**/*")
 	userGroup := r.Group("/user")
 	{
@@ -88,6 +94,17 @@ func main() {
 		bookGroup.Any("/edit", handler.EditBookHandler)
 		bookGroup.GET("/upload", handler.ShowUpload)
 		bookGroup.POST("/upload", handler.UploadHandler)
+	}
+
+	learnGroup := r.Group("/test1")
+	{
+		learnGroup.GET("/:name/:id", handler.LearnExample1Handler)
+	}
+	learn2Group := r.Group("test2")
+	{
+		learn2Group.GET("/example1", handler.LearnExample2Handler)
+		learn2Group.GET("/example2", handler.LearnExample3Handler)
+		learn2Group.GET("/bookable", handler.LearnExample4Handler)
 	}
 
 	r.Run(":9090")
